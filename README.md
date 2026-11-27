@@ -86,11 +86,11 @@ The tests start temporary SQLite databases and a temporary MCP server; they neve
 
 1. Create a Supabase project.
 2. Open **SQL Editor**, paste all of `supabase/schema.sql`, and run it. This creates `clients`, `followups`, `activity_logs`, indexes, update triggers and row level security.
-3. Open **Project Settings → Database → Connection string → URI → Transaction pooler** and copy the URI.
+3. On the project page, click **Connect → Session pooler → URI** and copy the URI. Replace the password placeholder with your database password. Session pooler is correct for persistent backends like Render; transaction pooler is for serverless/edge runtimes.
 4. Use that URI as `DATABASE_URL` on **both** Render services. Example shape:
 
 ```text
-postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres?sslmode=require
+postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres?sslmode=require
 ```
 
 Never put this value in the frontend, in `vercel.json`, in `render.yaml`, or in source control. The app's SQL is parameterised, and public/anon access is not granted on the tables.
@@ -109,7 +109,7 @@ Never put this value in the frontend, in `vercel.json`, in `render.yaml`, or in 
 | `PYTHON_VERSION` | `3.13.0` |
 | `DEMO_MODE` | `false` |
 | `APP_ACCESS_TOKEN` | long random secret, e.g. `openssl rand -hex 32` |
-| `DATABASE_URL` | Supabase transaction-pooler URI |
+| `DATABASE_URL` | Supabase session-pooler URI |
 | `CLIENT_ORIGIN` | your Vercel origin, e.g. `https://followupflow.vercel.app` |
 
 ### MCP service: `followupflow-mcp`
@@ -122,7 +122,7 @@ Never put this value in the frontend, in `vercel.json`, in `render.yaml`, or in 
 | `PYTHON_VERSION` | `3.13.0` |
 | `DEMO_MODE` | `false` |
 | `APP_ACCESS_TOKEN` | the exact same token as the API service |
-| `DATABASE_URL` | the exact same Supabase URI as the API service |
+| `DATABASE_URL` | the exact same Supabase session-pooler URI as the API service |
 | `MCP_ALLOWED_HOSTS` | `your-mcp.onrender.com,your-mcp.onrender.com:*` |
 | `MCP_ALLOWED_ORIGINS` | `https://claude.ai` for Claude's browser connector; leave empty for Claude Desktop |
 
